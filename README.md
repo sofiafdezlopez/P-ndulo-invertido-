@@ -38,3 +38,18 @@ soldadura de componentes.
 - El sistema debe ser capaz de __mantenerse en posición vertical__ con una tolerancia de ±5
 - El sistema debe __compensar los empujones externos__ y volver a la posición vertical.
 - El sistema debe ser capaz de poder __iniciar su funcionamiento desde cualquier posición__.
+
+## Revisión de proyectos relacionados
+En cuanto a la busqueda de proyectos similares hemos encontrado videos donde te muestran el proceso de como construir y programar un robot autobalanceado pero en ningun momento lo documentan de manera que puedas hacerlo sin ver el video.
+
+## Configuración del Hardware
+
+## Diseño del chasis
+
+## Montaje
+
+## Comprobación del funcionamiento de los componentes
+
+## Implementación del Software
+
+## Ajuste del PID
