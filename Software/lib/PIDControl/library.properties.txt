@@ -1,0 +1,7 @@
+name=PIDControl
+version=1.0.0
+author=Tu Nombre
+sentence=Biblioteca de control PID para Arduino y ESP32.
+paragraph=Tres modos: estándar, discreto y con derivada filtrada.
+category=Signal Input/Output
+architectures=*

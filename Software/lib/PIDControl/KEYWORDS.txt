@@ -1,0 +1,11 @@
+PIDControl      KEYWORD1
+PIDMode         KEYWORD1
+setOutputLimits KEYWORD2
+setSetpoint     KEYWORD2
+compute         KEYWORD2
+reset           KEYWORD2
+getOutput       KEYWORD2
+getSetpoint     KEYWORD2
+MODE_STANDARD   LITERAL1
+MODE_DISCRETE   LITERAL1
+MODE_FILTERED   LITERAL1
