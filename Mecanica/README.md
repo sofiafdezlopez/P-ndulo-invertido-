@@ -4,7 +4,9 @@ En esta carpeta se incluyen los diseños y materiales mecánicos necesarios para
 La estructura de la carpeta es la siguiente:
 
 - `README.md/`: Este fichero.
-- `Diseño3D.zip/`: Carpeta comprimida del modelado 3D del robot en Inventor.
+- `CHASIS.ipt/`: Modelado 3D del chasis en Inventor.
+- `CHASIS_V2.stl/`: Archivo .stl del chasis en Inventor.
+- `CHASIS_V2.gcode/`: Archivo .gcode del chasis en Inventor.
 - `Componentes_mecanicos.md/`: Fichero que contiene la lista de componentes mecánicos.
 
 ## Estructura General
