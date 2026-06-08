@@ -14,12 +14,25 @@ La estructura de la carpeta es la siguiente:
     - **Superior**: Electrónica y sensor.
 
  ## Dimensiones Orientativas
-- **Largo***: cm
-- **Ancho**: cm
-- **Altura**: cm
-- **Distancia entre Ruedas**: cm
+- **Largo***~ 15 cm
+- **Ancho**~ 10 cm
+- **Altura**~ 3 cm
+- **Distancia entre Ruedas**~ 15 cm
   
  ## Material Utilizado 
  - **Chasis**: PLA/PETG (Impresión 3D)
- - **Cables**:
+ - **Motores:** mini micromotores DC con engranajes de rueda dentada.
+ - **Ruedas:** diámetro 6–7 cm, goma antideslizante (Mecanum).
+ - **Batería:** Varta (9 V).
+ - **Cables**
    
+## Esquema simple (vista superior)
+<pre>
+┌─────────────────────────────────────────┐
+│        Placa controladora arriba        │
+│                                         │ 
+[Rueda L]Motor               Motor[Rueda R]
+│                                         │ 
+│        Batería en el centro             │
+└─────────────────────────────────────────┘
+</pre>
