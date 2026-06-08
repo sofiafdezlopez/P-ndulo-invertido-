@@ -18,7 +18,7 @@ MPU6050    sensor;
 Preferences prefs;
 
 // ─── Pines de motores ─────────────────────────────────────────────────────────
-const int pinPWMA = 12, pinAIN2 = 25, pinAIN1 = 33;
+const int pinPWMA = 12, pinAIN2 = 33 pinAIN1 = 25;
 const int pinPWMB = 15, pinBIN1 = 26, pinBIN2 = 27;
 
 // ─── Límites de operación ─────────────────────────────────────────────────────
