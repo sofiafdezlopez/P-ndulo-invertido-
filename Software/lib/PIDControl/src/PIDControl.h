@@ -11,16 +11,35 @@ enum PIDMode {
 
 class PIDControl {
 public:
+    // Kp: ganancia proporcional
+    // Ki: ganancia integral
+    // Kd: ganancia derivativa
+    // dt: período de muestreo en segundos
+    // u0: valor inicial de salida (por defecto 0)
+    // mode: modo de operación (STANDARD, DISCRETE o FILTERED)
     PIDControl(double Kp, double Ki, double Kd, double dt,
                double u0 = 0.0, PIDMode mode = MODE_STANDARD);
 
-    void   setOutputLimits(double min, double max);
-    void   setSetpoint(double setpoint);
-    double compute(double measured_value);
-    void   reset();
+    // Establece los límites mínimo y máximo para la salida del controlador
+    // Útil para proteger actuadores (ej: limitar PWM entre -170 y 170)
+    void   establecerLimiteSalida(double min, double max);
+    
+    // Establece el valor objetivo (setpoint) que el controlador intenta alcanzar
+    void   establecerSetpoint(double setpoint);
+    
+    // Calcula la salida del controlador basado en la lectura actual del sensor
+    // Retorna la acción de control a aplicar al motor
+    double calcular(double valor_medido);
+    
+    // Reinicia el estado interno del controlador (integral, buffers, etc.)
+    // Útil al cambiar de modo o después de una caída
+    void   reiniciar();
 
-    double getOutput()   const { return _output; }
-    double getSetpoint() const { return _setpoint; }
+    // Retorna la salida actual del controlador
+    double obtenerSalida()   const { return _output; }
+    
+    // Retorna el valor objetivo actual
+    double obtenerSetpoint() const { return _setpoint; }
 
 private:
     double _Kp, _Ki, _Kd, _dt;

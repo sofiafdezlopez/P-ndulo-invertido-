@@ -81,12 +81,12 @@ void setup() {
     moveMotor(pinPWMB, pinBIN1, pinBIN2, 0);
 
     // Configurar setpoint y límites
-    pidS.setSetpoint(EQUILIBRIUM_ANGLE);
-    pidS.setOutputLimits(-PWM_MAX, PWM_MAX);
-    pidD.setSetpoint(EQUILIBRIUM_ANGLE);
-    pidD.setOutputLimits(-PWM_MAX, PWM_MAX);
-    pidF.setSetpoint(EQUILIBRIUM_ANGLE);
-    pidF.setOutputLimits(-PWM_MAX, PWM_MAX);
+    pidS.establecerSetpoint(EQUILIBRIUM_ANGLE);
+    pidS.establecerLimiteSalida(-PWM_MAX, PWM_MAX);
+    pidD.establecerSetpoint(EQUILIBRIUM_ANGLE);
+    pidD.establecerLimiteSalida(-PWM_MAX, PWM_MAX);
+    pidF.establecerSetpoint(EQUILIBRIUM_ANGLE);
+    pidF.establecerLimiteSalida(-PWM_MAX, PWM_MAX);
 
     // Ángulo inicial
     sensor.getAcceleration(&ax, &ay, &az);
@@ -136,14 +136,14 @@ void loop() {
     if (fabsf(error) > FALL_ANGLE) {
         moveMotor(pinPWMA, pinAIN1, pinAIN2, 0);
         moveMotor(pinPWMB, pinBIN1, pinBIN2, 0);
-        pidS.reset();
-        pidD.reset();
-        pidF.reset();
+        pidS.reiniciar();
+        pidD.reiniciar();
+        pidF.reiniciar();
         return;
     }
 
     // Calcular salida PID
-    float output = (float)activePid->compute((double)ang_y);
+    float output = (float)activePid->calcular((double)ang_y);
 
     moveMotor(pinPWMA, pinAIN1, pinAIN2, output);
     moveMotor(pinPWMB, pinBIN1, pinBIN2, -output);
@@ -173,9 +173,9 @@ void loop() {
 
 
 void switchMode(PIDMode mode, const char* name) {
-    pidS.reset();
-    pidD.reset();
-    pidF.reset();
+    pidS.reiniciar();
+    pidD.reiniciar();
+    pidF.reiniciar();
     currentMode = mode;
 
     if (mode == MODE_STANDARD) {
