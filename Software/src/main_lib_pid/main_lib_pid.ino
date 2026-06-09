@@ -27,15 +27,15 @@
 #include <PIDControl.h>
 
 // ── Pines de motores ──────────────────────────────────────────────────────────
-const int pinPWMA = 12, pinAIN1 = 33, pinAIN2 = 25;
+const int pinPWMA = 12, pinAIN1 = 25, pinAIN2 = 33;
 const int pinPWMB = 15, pinBIN1 = 26, pinBIN2 = 27;
 
 // ── Límites PWM ───────────────────────────────────────────────────────────────
 const int PWM_MAX  = 170;  // 255 × (6V / 9V) — protege motores de 6V
 
 // ── Ángulo de equilibrio y límite de caída ────────────────────────────────────
-const float EQUILIBRIUM_ANGLE = 6.0f;   // Ajustar con calibracion_mpu6050
-const float FALL_ANGLE        = 24.0f;  // Más de ±35° → está caído
+const float EQUILIBRIUM_ANGLE = 0.0f;   // Robot vertical (offsets MPU6050 ya aplicados en setup)
+const float FALL_ANGLE        = 24.0f;  // Más de ±24° → está caído
 
 // ── Filtros del sensor ────────────────────────────────────────────────────────
 const float ALPHA_LP   = 0.12f;  // Paso-bajo en acelerómetro
@@ -78,6 +78,14 @@ void setup() {
     Wire.begin(18, 19);
     Wire.setClock(400000);
     sensor.initialize();
+
+    // Offsets calibrados del MPU6050 (los mismos que main.ino)
+    sensor.setXAccelOffset(-736);
+    sensor.setYAccelOffset(1299);
+    sensor.setZAccelOffset(1522);
+    sensor.setXGyroOffset(166);
+    sensor.setYGyroOffset(250);
+    sensor.setZGyroOffset(56);
 
     if (!sensor.testConnection()) {
         Serial.println("ERROR: MPU6050 no detectado. Revisa el cableado I2C.");
@@ -128,10 +136,16 @@ void loop() {
 
     // ── Comandos por Serial ───────────────────────────────────────────────────
     if (Serial.available()) {
-        char c = (char)toupper(Serial.read());
-        if      (c == 'S') switchMode(MODE_STANDARD, "STANDARD");
-        else if (c == 'D') switchMode(MODE_DISCRETE, "DISCRETE");
-        else if (c == 'F') switchMode(MODE_FILTERED, "FILTERED");
+        char command = (char)toupper(Serial.read());
+        
+        // Cambiar modo según el comando recibido
+        if (command == 'S') {
+            switchMode(MODE_STANDARD, "STANDARD");
+        } else if (command == 'D') {
+            switchMode(MODE_DISCRETE, "DISCRETE");
+        } else if (command == 'F') {
+            switchMode(MODE_FILTERED, "FILTERED");
+        }
     }
 
     // ── Lectura y filtrado del sensor ─────────────────────────────────────────
@@ -170,18 +184,28 @@ void loop() {
     // ── Calcular salida con el modo activo ────────────────────────────────────
     float output = (float)activePid->compute((double)ang_y);
 
+    // Motor B negado para corregir montaje en sentido contrario (igual que main.ino)
     moveMotor(pinPWMA, pinAIN1, pinAIN2,  output);
-    moveMotor(pinPWMB, pinBIN1, pinBIN2,  output);
+    moveMotor(pinPWMB, pinBIN1, pinBIN2, -output);
 
     // ── Telemetría cada 50 ms ─────────────────────────────────────────────────
     static unsigned long lastPrint = 0;
     unsigned long now = millis();
     if (now - lastPrint >= 50) {
         lastPrint = now;
-        const char* mStr = (currentMode == MODE_STANDARD) ? "STD" :
-                           (currentMode == MODE_DISCRETE)  ? "DIS" : "FIL";
+        
+        // Obtener nombre abreviado del modo actual
+        const char* modeStr;
+        if (currentMode == MODE_STANDARD) {
+            modeStr = "STD";
+        } else if (currentMode == MODE_DISCRETE) {
+            modeStr = "DIS";
+        } else {
+            modeStr = "FIL";
+        }
+        
         Serial.printf("[%s] ang=%6.2f  err=%6.2f  out=%5.0f\n",
-                      mStr, ang_y, error, output);
+                      modeStr, ang_y, error, output);
     }
 
     // ── Sincronizar bucle a DT fijo ───────────────────────────────────────────
@@ -193,12 +217,22 @@ void loop() {
 
 // ── Cambiar de modo: resetea todos los controladores antes de activar ─────────
 void switchMode(PIDMode mode, const char* name) {
+    // Resetear todos los controladores para evitar acumulación de error
     pidS.reset();
     pidD.reset();
     pidF.reset();
+    
+    // Seleccionar el controlador correspondiente al modo
     currentMode = mode;
-    activePid = (mode == MODE_STANDARD) ? &pidS :
-                (mode == MODE_DISCRETE)  ? &pidD : &pidF;
+    
+    if (mode == MODE_STANDARD) {
+        activePid = &pidS;
+    } else if (mode == MODE_DISCRETE) {
+        activePid = &pidD;
+    } else {
+        activePid = &pidF;
+    }
+    
     Serial.printf(">>> Modo cambiado: MODE_%s\n", name);
 }
 
@@ -206,8 +240,21 @@ void switchMode(PIDMode mode, const char* name) {
 // ── Control de motores con límite PWM ────────────────────────────────────────
 void moveMotor(int pwmPin, int in1, int in2, float speed) {
     int pwm = (int)fabsf(speed);
-    if (pwm > PWM_MAX) pwm = PWM_MAX;
-    digitalWrite(in1, speed > 0.0f ? HIGH : LOW);
-    digitalWrite(in2, speed > 0.0f ? LOW  : HIGH);
+    
+    // Limitar PWM al máximo permitido
+    if (pwm > PWM_MAX) {
+        pwm = PWM_MAX;
+    }
+    
+    // Determinar dirección de rotación
+    if (speed > 0.0f) {
+        digitalWrite(in1, HIGH);
+        digitalWrite(in2, LOW);
+    } else {
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, HIGH);
+    }
+    
+    // Aplicar PWM
     analogWrite(pwmPin, pwm);
 }
