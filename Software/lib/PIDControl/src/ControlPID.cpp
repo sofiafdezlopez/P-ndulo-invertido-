@@ -45,7 +45,6 @@ void PIDControl::establecerLimiteSalida(double min, double max) {
     _limitOutput = true;
     _outMin = min;
     _outMax = max;
-    _output = _clamp(_output);
 }
 
 // Establece el valor objetivo (setpoint)
@@ -106,14 +105,5 @@ double PIDControl::calcular(double valor_medido) {
     }
 
     // Limitar la salida entre los límites establecidos
-    _output = _clamp(_output);
     return _output;
-}
-
-// Función auxiliar: limita un valor entre _outMin y _outMax
-// Si los límites no están establecidos, retorna el valor sin cambios
-    if (!_limitOutput) return value;
-    if (value > _outMax) return _outMax;
-    if (value < _outMin) return _outMin;
-    return value;
 }

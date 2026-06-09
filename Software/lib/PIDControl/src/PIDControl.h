@@ -64,8 +64,6 @@ private:
     double _A0d, _A1d, _A2d;
     double _alpha1, _alpha2;
     double _d0, _d1, _fd0, _fd1;
-
-    double _clamp(double value);
 };
 
 #endif
