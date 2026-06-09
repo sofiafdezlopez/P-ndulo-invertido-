@@ -76,7 +76,7 @@ Antes de realizar las pruebas de movimiento completo, es fundamental verificar d
      
 - **2. Calibración y Lectura del Sensor de ÁnguloAcción**: Conecta el robot al ordenador mediante el cable USB y carga un script básico de prueba para el sensor.
 
-   - **Verificación**: Abre el serial moinitor. Al mover el robot hacia adelante y hacia atrás, los valores del ángulo respecto al suelo deben variar de forma coherente.
+   - **Verificación**: Abre el serial monitor. Al mover el robot hacia adelante y hacia atrás, los valores del ángulo respecto al suelo deben variar de forma coherente.
      
 - **3. Test de Giro de los MotoresAcción**: Eleva el robot (para que las ruedas no toquen el suelo) y ejecuta un código de prueba que haga girar los motores hacia adelante durante 2 segundos y hacia atrás otros 2 segundos.
 
@@ -109,5 +109,17 @@ Paso 2: Planta Inferior (Alimentación): Se coloca la pila/bateria en su enganch
 Paso 3: Planta Superior (PCB): Se atornilla la PCB, en nuestro caso la enganchamos con bridas debido a que los agujeros de esta son muy pequeños, y se encaja el interruptor.
 
 ## Implementación del Software
+El software del robot está desarrollado en C++ sobre Arduino. Se organiza en tres capas: utilidades de test y calibración, una biblioteca de control PID propia, y el programa principal de autobalanceo.
+
+El núcleo del sistema es la biblioteca PIDControl, desarrollada para este proyecto. Encapsula tres variantes de controlador PID que pueden seleccionarse en tiempo de ejecución mediante comandos por puerto serie:
+
+MODE_STANDARD – PID clásico posicional con acumulador integral y derivada por diferencias finitas.
+MODE_DISCRETE – Forma recurrente discreta que opera directamente sobre los tres últimos errores mediante coeficientes A0/A1/A2.
+MODE_FILTERED – PI incremental combinado con derivada filtrada por transformada bilineal, que atenúa el ruido de alta frecuencia en la señal de error.
+
+La estimación del ángulo de inclinación se obtiene del sensor MPU6050 (acelerómetro + giroscopio) mediante un filtro complementario (α = 0,98), que combina la integración del giroscopio a corto plazo con la referencia del acelerómetro a largo plazo.
+
+Los motores se controlan a través de un driver TB6612FNG, con PWM limitado a 170 cuentas para respetar el voltaje nominal de 6 V con la batería de 9 V. El sistema detecta una caída si el ángulo supera ±24° y detiene los motores automáticamente.
+Para más detalles sobre la arquitectura, los algoritmos y la guía de uso, ver Software/README.md.
 
 ## Ajuste del PID
