@@ -29,9 +29,9 @@ const float ALPHA_COMP = 0.98f;
 const double DT_S = 0.01;
 
 // Ganancias PID
-const double KP = 35.0;
-const double KI = 0.1;
-const double KD = 5.0;
+const double KP = 30.0;
+const double KI = 0.05;
+const double KD = 15.0;
 
 // Controladores PID para los tres modos
 PIDControl pidS(KP, KI, KD, DT_S, 0.0, MODE_STANDARD);
