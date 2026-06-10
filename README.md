@@ -102,24 +102,56 @@ Herramientas: Se necesita soldador de estaño, destornillador de estrella y brid
 
 **2. Guía de Ensamblaje Paso a Paso**
 
-Paso 1: El sistema de tracción: Se fijan los motores al chasis a la altura deseada.
+Paso 1 -> El sistema de tracción: Se fijan los motores al chasis a la altura deseada.
 
-Paso 2: Planta Inferior (Alimentación): Se coloca la pila/bateria en su enganche, implementado en el diseño del chasis.
+Paso 2 -> Planta Inferior (Alimentación): Se coloca la pila/bateria en su enganche, implementado en el diseño del chasis.
 
-Paso 3: Planta Superior (PCB): Se atornilla la PCB, en nuestro caso la enganchamos con bridas debido a que los agujeros de esta son muy pequeños, y se encaja el interruptor.
+Paso 3 -> Planta Superior (PCB): Se atornilla la PCB, en nuestro caso la enganchamos con bridas debido a que los agujeros de esta son muy pequeños, y se encaja el interruptor.
 
 ## Implementación del Software
 El software del robot está desarrollado en C++ sobre Arduino. Se organiza en tres capas: utilidades de test y calibración, una biblioteca de control PID propia, y el programa principal de autobalanceo.
 
 El núcleo del sistema es la biblioteca PIDControl, desarrollada para este proyecto. Encapsula tres variantes de controlador PID que pueden seleccionarse en tiempo de ejecución mediante comandos por puerto serie:
 
-MODE_STANDARD – PID clásico posicional con acumulador integral y derivada por diferencias finitas.
-MODE_DISCRETE – Forma recurrente discreta que opera directamente sobre los tres últimos errores mediante coeficientes A0/A1/A2.
-MODE_FILTERED – PI incremental combinado con derivada filtrada por transformada bilineal, que atenúa el ruido de alta frecuencia en la señal de error.
+**MODE_STANDARD** – PID clásico posicional con acumulador integral y derivada por diferencias finitas.
+
+**MODE_DISCRETE**– Forma recurrente discreta que opera directamente sobre los tres últimos errores mediante coeficientes A0/A1/A2.
+
+**MODE_FILTERED** – PI incremental combinado con derivada filtrada por transformada bilineal, que atenúa el ruido de alta frecuencia en la señal de error.
 
 La estimación del ángulo de inclinación se obtiene del sensor MPU6050 (acelerómetro + giroscopio) mediante un filtro complementario (α = 0,98), que combina la integración del giroscopio a corto plazo con la referencia del acelerómetro a largo plazo.
 
 Los motores se controlan a través de un driver TB6612FNG, con PWM limitado a 170 cuentas para respetar el voltaje nominal de 6 V con la batería de 9 V. El sistema detecta una caída si el ángulo supera ±24° y detiene los motores automáticamente.
-Para más detalles sobre la arquitectura, los algoritmos y la guía de uso, ver Software/README.md.
+
+Para más detalles sobre la arquitectura, los algoritmos y la guía de uso, ver `Software/README.md/`.
 
 ## Ajuste del PID
+El ajuste se realizó de forma manual sobre el robot físico, siguiendo este orden:
+
+- Con Ki=0 y Kd=0, se sube Kp hasta que el robot resiste la caída sin oscilar de forma incontrolable.
+
+- Se incrementa Kd hasta amortiguar las oscilaciones y conseguir un comportamiento casi estable.
+
+- Con Kp y Kd fijados, se añade un Ki pequeño para eliminar el error estacionario. Un valor excesivo desestabiliza el sistema.
+
+- El ángulo de equilibrio real del robot se midió en aproximadamente 6° (el signo depende de la orientación del MPU6050). Los valores que produjeron un balanceo estable fueron:
+
+| Kp | Ki | Kd | dt |
+| :---: | :---: | :---: | :---: |
+| `30.0` | `0.05` | `15.0` | `10 ms` |
+
+De los tres modos probados, MODE_FILTERED mostró la respuesta más suave, ya que el filtro paso-bajo en la derivada reduce el efecto del ruido del MPU6050 sobre los motores.
+
+## Multimedia
+
+<details>
+  <summary>Haz clic aquí para ver las fotos y videos</summary>
+  
+  ### Fotos
+  ![Vista frontal](Multimedia/IMG_3162.jpeg)
+  ![Vista de planta](Multimedia/IMG_3164.jpeg)
+  ![Vista posterior](Multimedia/IMG_3166.jpeg)
+  
+  ### Video de demostración
+  [Mira el video aquí](enlace-de-tu-video.mp4) 
+</details>
