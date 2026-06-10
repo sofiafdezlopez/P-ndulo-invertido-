@@ -138,7 +138,7 @@ El ajuste se realizó de forma manual sobre el robot físico, siguiendo este ord
 
 | Kp | Ki | Kd | dt |
 | :---: | :---: | :---: | :---: |
-| `30.0` | `0.05` | `15.0` | `10 ms` |
+| `17` | `0` | `1.2` | `10 ms` |
 
 De los tres modos probados, MODE_FILTERED mostró la respuesta más suave, ya que el filtro paso-bajo en la derivada reduce el efecto del ruido del MPU6050 sobre los motores.
 
@@ -147,11 +147,15 @@ De los tres modos probados, MODE_FILTERED mostró la respuesta más suave, ya qu
 <details>
   <summary>Haz clic aquí para ver las fotos y videos</summary>
   
-  ### Fotos
+  ### Fotos del modelo
   ![Vista frontal](Multimedia/IMG_3162.jpeg)
   ![Vista de planta](Multimedia/IMG_3164.jpeg)
   ![Vista posterior](Multimedia/IMG_3166.jpeg)
   
-  ### Video de demostración
-  [Mira el video aquí](enlace-de-tu-video.mp4) 
+  ### Videos de demostración
+  [Mira el video 1 aquí](Multimedia/video1.mov) 
+  
+  [Mira el video 2 aquí](Multimedia/video2.mov) 
+  
+  [Mira el video 3 aquí](Multimedia/video3.mov) 
 </details>
