@@ -124,7 +124,7 @@ u(k)      = u(k−1) + Δu_PI(k) + fd(k)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;La constante de tiempo del filtro es τ = Kd/(Kp·N), con N = 5 por defecto.
 
 
-3. **Control de motores**
+**Control de motores**
 
 - La salida del controlador PID se aplica a ambos motores en sentido opuesto (el robot avanza para compensar la inclinación). La función moveMotor gestiona la dirección mediante los pines IN1/IN2 del driver y la velocidad mediante PWM:
 
@@ -134,11 +134,11 @@ u(k)      = u(k−1) + Δu_PI(k) + fd(k)
 - PWM limitado a 170 cuentas (≈ 6,7 V efectivos sobre 9 V de batería).
 
 
-4. **Protección por caída**
+**Protección por caída**
 
 - Si el ángulo de inclinación supera ±35°, el sistema detiene los motores, reinicia todos los controladores PID y espera a que el robot sea recolocado manualmente. Esto evita que los motores fuercen contra el suelo y protege el hardware.
 
 
-5. **Cambio de modo en tiempo de ejecución**
+**Cambio de modo en tiempo de ejecución**
 
 - Enviando S, D o F por el Monitor Serie se cambia el controlador activo sin necesidad de reiniciar el robot ni recompilar. Al cambiar de modo se reinician todos los controladores para evitar transitorios causados por valores residuales en los buffers de error.
