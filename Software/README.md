@@ -21,7 +21,6 @@ Software/
 │       ├── src/
 │       │   ├── PIDControl.h     ← Declaración de la clase y enumeración PIDMode
 │       │   └── ControlPID.cpp   ← Implementación de los tres modos
-│       ├── examples/            ← Sketches de ejemplo por modo
 │       ├── library.properties   ← Metadatos para el IDE de Arduino
 │       └── KEYWORDS.txt         ← Coloreado de sintaxis
 ├── src/
