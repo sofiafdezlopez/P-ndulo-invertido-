@@ -18,6 +18,9 @@ const int pinPWMB = 15, pinBIN1 = 26, pinBIN2 = 27;
 // PWM máximo permitido (6V motores, 9V batería)
 const int PWM_MAX = 170;
 
+// DEADBAND para evitar vibraciones
+const int DEADBAND = 25;
+
 // Ángulo de equilibrio y límite de caída
 const float EQUILIBRIUM_ANGLE = 0.0f;
 const float FALL_ANGLE = 24.0f;
@@ -29,9 +32,9 @@ const float ALPHA_COMP = 0.98f;
 const double DT_S = 0.01;
 
 // Ganancias PID
-const double KP = 30.0;
-const double KI = 0.05;
-const double KD = 15.0;
+const double KP = 17.0;
+const double KI = 0.0;
+const double KD = 1.2;
 
 // Controladores PID para los tres modos
 PIDControl pidS(KP, KI, KD, DT_S, 0.0, MODE_STANDARD);
@@ -194,6 +197,13 @@ void moveMotor(int pwmPin, int in1, int in2, float speed) {
 
     if (pwm > PWM_MAX) {
         pwm = PWM_MAX;
+    }
+
+        if (pwm < DEADBAND) {           
+        digitalWrite(in1, LOW);
+        digitalWrite(in2, LOW);
+        analogWrite(pwmPin, 0);
+        return;
     }
 
     if (speed > 0.0f) {

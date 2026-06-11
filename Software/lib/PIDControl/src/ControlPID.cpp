@@ -32,11 +32,11 @@ PIDControl::PIDControl(double Kp, double Ki, double Kd, double dt,
     // Filtro bilineal paso-bajo: atenúa el ruido del derivativo
     // N es el orden del filtro (5 es estándar)
     // tau es la constante de tiempo = Kd / (Kp * N)
-    const int N  = 5;
-    double tau   = (Kp > 0.0) ? (Kd / (Kp * N)) : 1e-6;
+    const int N = 5;
+    double tau = (Kp > 0.0) ? (Kd / (Kp * N)) : 1e-6;
     double alpha = dt / (2.0 * tau);
-    _alpha1      = alpha / (alpha + 1.0);
-    _alpha2      = (alpha - 1.0) / (alpha + 1.0);
+    _alpha1 = alpha / (alpha + 1.0);
+    _alpha2 = (alpha - 1.0) / (alpha + 1.0);
 }
 
 // Establece los límites de la salida
@@ -55,7 +55,7 @@ void PIDControl::establecerSetpoint(double setpoint) {
 // Reinicia el estado interno: borra integral, errores anteriores y filtros
 void PIDControl::reiniciar() {
     _prevError = 0.0;
-    _integral  = 0.0;
+    _integral = 0.0;
     _error[0] = _error[1] = _error[2] = 0.0;
     _d0 = _d1 = _fd0 = _fd1 = 0.0;
 }
@@ -67,11 +67,11 @@ double PIDControl::calcular(double valor_medido) {
 
         // Modo clásico: error acumulado + derivada instantánea
         case MODE_STANDARD: {
-            double error      = _setpoint - valor_medido;
-            _integral        += error * _dt;          // Acumular integral
+            double error = _setpoint - valor_medido;
+            _integral += error * _dt;          // Acumular integral
             double derivative = (error - _prevError) / _dt;  // Cambio de error
-            _output           = _Kp * error + _Ki * _integral + _Kd * derivative;
-            _prevError        = error;                // Guardar para próxima iteración
+            _output = _Kp * error + _Ki * _integral + _Kd * derivative;
+            _prevError = error;                // Guardar para próxima iteración
             break;
         }
 
@@ -80,7 +80,7 @@ double PIDControl::calcular(double valor_medido) {
             _error[2] = _error[1];      // Desplazar buffer: e[k-2] ← e[k-1]
             _error[1] = _error[0];      // e[k-1] ← e[k]
             _error[0] = _setpoint - valor_medido;  // Nuevo error e[k]
-            _output   = _A0 * _error[0] + _A1 * _error[1] + _A2 * _error[2];
+            _output = _A0 * _error[0] + _A1 * _error[1] + _A2 * _error[2];
             break;
         }
 
@@ -94,8 +94,8 @@ double PIDControl::calcular(double valor_medido) {
             _output += _A0pi * _error[0] + _A1pi * _error[1];
 
             // Parte derivativa con filtro bilineal (atenúa ruido)
-            _d1  = _d0;  // Guardar valor anterior
-            _d0  = _A0d * _error[0] + _A1d * _error[1] + _A2d * _error[2];
+            _d1 = _d0;  // Guardar valor anterior
+            _d0 = _A0d * _error[0] + _A1d * _error[1] + _A2d * _error[2];
             _fd1 = _fd0;  // Guardar salida filtrada anterior
             // Filtro: salida = alpha1*(d0+d1) - alpha2*fd1
             _fd0 = _alpha1 * (_d0 + _d1) - _alpha2 * _fd1;
