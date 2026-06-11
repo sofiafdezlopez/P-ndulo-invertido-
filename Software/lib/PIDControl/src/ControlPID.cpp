@@ -30,7 +30,7 @@ PIDControl::PIDControl(double Kp, double Ki, double Kd, double dt,
     _A2d = Kd / dt;
 
     // Filtro bilineal paso-bajo: atenúa el ruido del derivativo
-    // N es el orden del filtro (5 es estándar)
+    // N es el orden del filtro
     // tau es la constante de tiempo = Kd / (Kp * N)
     const int N = 5;
     double tau = (Kp > 0.0) ? (Kd / (Kp * N)) : 1e-6;
