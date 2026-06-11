@@ -25,7 +25,7 @@ Software/
 │       └── KEYWORDS.txt         ← Coloreado de sintaxis
 ├── src/
 │   ├── main/
-│   │   └── main.ino             ← Prototipo inicial (referencia histórica)
+│   │   └── main.ino             ← Programa inicial
 │   └── main_lib_pid/
 │       └── main_lib_pid.ino     ← Programa principal con los tres modos PID
 └── test/
@@ -135,7 +135,7 @@ u(k)      = u(k−1) + Δu_PI(k) + fd(k)
 
 **Protección por caída**
 
-- Si el ángulo de inclinación supera ±35°, el sistema detiene los motores, reinicia todos los controladores PID y espera a que el robot sea recolocado manualmente. Esto evita que los motores fuercen contra el suelo y protege el hardware.
+- Si el ángulo de inclinación supera ±24°, el sistema detiene los motores, reinicia todos los controladores PID y espera a que el robot sea recolocado manualmente. Esto evita que los motores fuercen contra el suelo y protege el hardware.
 
 
 **Cambio de modo en tiempo de ejecución**
